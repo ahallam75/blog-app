@@ -4,8 +4,16 @@ import jsonPlaceholder from "../apis/jsonPlaceholder";
 //----- One way to fetch each user only one time using lodash _.uniq and _.map----- //
 export const fetchPostsAndUsers = () => async (dispatch, getState) => {
   await dispatch(fetchPosts());
-  const userIds = _.uniq(_.map(getState().posts, "userId"));
-  userIds.forEach(id => dispatch(fetchUser(id)));
+
+  // This is a clearer way of writing the code below, i.e. - const userIds, etc...
+  _.chain(getState().posts)
+    .map("userId")
+    .uniq()
+    .forEach(id => dispatch(fetchUser(id)))
+    .value();
+
+  // const userIds = _.uniq(_.map(getState().posts, "userId"));
+  // userIds.forEach(id => dispatch(fetchUser(id)));
 };
 
 export const fetchPosts = () => async dispatch => {
